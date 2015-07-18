@@ -1,4 +1,4 @@
-CODE = '(+ 1 3)'
+CODE = '(+ 1 (meow foo bar) (chicken-food blah meow) 3)'
 
 class Rogue
   def initialize(code)
@@ -12,9 +12,8 @@ class Rogue
     loop do
       case token = @tokens.shift
         when '(' then list.push parse
-        when ')' then (return list)
+        when ')', nil then (return list)
         when /\d+/ then list.push token.to_i
-        when nil then (return list)
         else list.push token.to_sym
       end
     end
