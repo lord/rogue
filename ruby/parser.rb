@@ -1,4 +1,4 @@
-CODE = '(+ 1 3 3 (+ 2 (+ 3 1) 3))'
+CODE = '(+ 1 3 3 (+ 2 (- 3 1) 3))'
 
 class Context
   def initialize(scope, parent=nil)
@@ -45,7 +45,7 @@ class Rogue
 
   def interpret(input, ctx=nil)
     if !ctx
-      interpret input, Context.new({:+ => Proc.new {|*nums| nums.inject(:+)}})
+      interpret input, Context.new({:+ => Proc.new {|*nums| nums.inject(:+)}, :- => Proc.new {|*nums| nums.inject(:-)}})
     elsif Array === input
       return interpretList(input, ctx)
     elsif Symbol === input
