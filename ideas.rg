@@ -1,24 +1,17 @@
-
-
-
 * string syntax, since we'll want to case over them...
 
-(def x (string cat\s\sdog meow))
-(println x) # => "cat  dog meow"
+(def x "unteohuneto ) #uthenot")
+(bytes (quote (12 281 283 190)))
 
 - string is a macro
 - macro preprocessor gives access to tokens as strings
 - it gets cat\s\sdog
-
-
 
 bytes of rogue (has a string literal, floats, and comments)
 --preprocessor--> # part of std library, can convert both ways (except comments)
 bytes of rogue-raw (has no string literals or comments or floats, has ints)
 --intepreter (contains lex, parse, eval)--> # written in host language
 action
-
-
 
 # stdlib
 lex :: bytes -> tokens
