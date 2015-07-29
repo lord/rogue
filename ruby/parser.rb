@@ -1,21 +1,8 @@
-CODE = '(+ 1 3 3 (+ 2 (- 3 1) 3))'
-
-class Context
-  def initialize(scope, parent=nil)
-    @scope = scope
-    @parent = parent
-  end
-
-  def get(id)
-    # warning: scope could be set to false if we have #f,
-    # but nil is returned for undefined
-    @scope[id] || (@parent.nil? ? nil : @parent.get(id))
-  end
-end
+CODE = '(* (- 5 6) (- (+ 1 1 1 1) 4 1))'
 
 class Rogue
   def self.parse(tokens)
-    return parse(tokens.gsub("(", " ( ").gsub(")", " ) ").split(' ')) if tokens.class == String
+    tokens = tokens.scan /[()]|".*?"|[^\s()]+/ if tokens.is_a? String
     list = []
     loop do
       case token = tokens.shift
@@ -28,31 +15,22 @@ class Rogue
   end
 
   def initialize(code)
-    code = self.class.parse(code) if code.class == String
-    @result = code.map {|n| interpret(n)}
+    code = self.class.parse(code) if code.is_a? String
+    @env = {
+      :+ => lambda {|nums, _| nums.inject :+},
+      :- => lambda {|nums, _| nums.inject :-},
+      :* => lambda {|nums, _| nums.inject :*},
+      :/ => lambda {|nums, _| nums.inject :/}
+    }
+    @result = code.map {|n| eval(n)}
   end
 
-  def interpretList(input, ctx)
-    list = input.map do |x|
-      interpret(x, ctx)
-    end
-    if Proc === list[0]
-      return list[0].call(*list[1..-1])
-    else
-      # TODO return error!
-    end
-  end
-
-  def interpret(input, ctx=nil)
-    if !ctx
-      interpret input, Context.new({:+ => Proc.new {|*nums| nums.inject(:+)}, :- => Proc.new {|*nums| nums.inject(:-)}})
-    elsif Array === input
-      return interpretList(input, ctx)
-    elsif Symbol === input
-      return ctx.get(input)
-    else
-      return input
-    end
+  def eval list, ctx=@env
+    return list unless list.is_a?(Array) && list.length > 0
+    func = eval list[0]
+    return ctx[func].call(list[1..-1].map {|i| eval i},ctx) if ctx[func].is_a? Proc
+    puts "error, function not found!"
+    []
   end
 end
 
