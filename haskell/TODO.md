@@ -1,0 +1,12 @@
+- Lang.Rogue.Raw
+    - re-write using types
+    - re-write using Free Monad stuff if there's some gain
+        - https://hackage.haskell.org/package/free-4.11
+        - https://hackage.haskell.org/package/free-4.11/docs/Control-Monad-Free.html
+        - http://www.haskellforall.com/2012/06/you-could-have-invented-free-monads.html
+        - http://programmers.stackexchange.com/questions/242795/what-is-the-free-monad-interpreter-pattern
+        - http://stackoverflow.com/questions/13352205/what-are-free-monads
+- Main
+    - use bytestring's interact (instead of getContents)
+    - build output incrementally with
+        - https://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Data-ByteString-Builder.html
